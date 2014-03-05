@@ -1,7 +1,7 @@
 Flyover
 =======
 
-Flyover is an Objective-C wrapper for the Overpass API
+Flyover is an Objective-C wrapper for the [Overpass API](http://wiki.openstreetmap.org/wiki/Overpass_API)
 
 Usage
 -----
