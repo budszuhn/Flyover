@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FOQuery.h"
+#import "FOQueryManager.h"
 
 @interface FOWay : NSObject <OSMWay>
 

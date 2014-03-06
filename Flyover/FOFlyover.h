@@ -14,7 +14,7 @@
 #import "FONode.h"
 #import "FOWay.h"
 #import "FORelation.h"
-#import "FOQuery.h"
+#import "FOQueryManager.h"
 
 #endif /* _FOFLYOVER_ */
 

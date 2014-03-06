@@ -6,12 +6,12 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
-#import "FOQuery.h"
+#import "FOQueryManager.h"
 #import "FONode.h"
 #import "FOWay.h"
 #import "FORelation.h"
 
-@interface FOQuery ()
+@interface FOQueryManager ()
 
 @property (nonatomic, strong) NSString *serverUrl;
 @property (nonatomic) OVQueryLanguage queryLanguage;
@@ -19,11 +19,11 @@
 
 @end
 
-@implementation FOQuery
+@implementation FOQueryManager
 
-+ (FOQuery *) queryWithServer: (NSString *) serverUrl queryLanguage: (OVQueryLanguage) queryLanguage delegate: (id <FOQueryDelegate>) delegate
++ (FOQueryManager *) managerWithServer: (NSString *) serverUrl queryLanguage: (OVQueryLanguage) queryLanguage delegate: (id <FOQueryDelegate>) delegate
 {
-    FOQuery *query = [[FOQuery alloc] init];
+    FOQueryManager *query = [[FOQueryManager alloc] init];
     query.serverUrl = serverUrl;
     query.queryLanguage = queryLanguage;
     query.delegate = delegate;
@@ -32,7 +32,7 @@
 }
 
 
-- (void) queryString: (NSString *) queryString forBoundingBox: (FOBoundingBox) boundingBox
+- (void) performQuery: (NSString *) queryString forBoundingBox: (FOBoundingBox) boundingBox
        success:(void (^)(NSArray *nodes, NSArray *ways, NSArray *relations))success
        failure:(void (^)(NSError *error))failure
 {

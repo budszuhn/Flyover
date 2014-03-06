@@ -11,7 +11,7 @@
 
 @interface FSViewController () <MKMapViewDelegate>
 
-@property (strong, nonatomic) FOQuery *query;
+@property (strong, nonatomic) FOQueryManager *queryManager;
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 
 @end
@@ -23,7 +23,7 @@
     [super viewDidLoad];
 
     // the query object can be re-used
-    self.query = [FOQuery queryWithServer:OVERPASS_SERVER_DE queryLanguage:OVQueryLanguageQL delegate:nil];
+    self.queryManager = [FOQueryManager managerWithServer:OVERPASS_SERVER_DE queryLanguage:OVQueryLanguageQL delegate:nil];
     
     // ich steh auf Berlin ;-)
     self.mapView.region = MKCoordinateRegionMakeWithDistance(CLLocationCoordinate2DMake(52.51737, 13.4013), 3000, 3000);
@@ -47,7 +47,7 @@
         FOBoundingBox bbox = FOBoundingBoxMakeFromCoordinates(nw, se);
         
         // Flyover will replace {{bbox}} with coordinates
-        [self.query queryString: @"[out:json]; (node ['shop'='bakery'] ({{bbox}})); out;" forBoundingBox:bbox success:^(NSArray *nodes, NSArray *ways, NSArray *relations) {
+        [self.queryManager performQuery: @"[out:json]; (node ['shop'='bakery'] ({{bbox}})); out;" forBoundingBox:bbox success:^(NSArray *nodes, NSArray *ways, NSArray *relations) {
             
             // nodes are duck-typed as MkAnnotations. Just throw them on the map.
             [mapView addAnnotations: nodes];

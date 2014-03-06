@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FOQuery.h"
+#import "FOQueryManager.h"
 
 // FONode is duck-typing as an MkAnnotaion. So you can use it in MapKit.
 

@@ -20,10 +20,10 @@ In XML it's:
 Here's a simple example to query bakeries:
 
         FOBoundingBox bbox = FOBoundingBoxMakeFromCoordinates(nw, se);
-        FOQuery *q = [FOQuery queryWithServer:OVERPASS_SERVER_DE queryLanguage:OVQueryLanguageQL delegate:nil];
+        FOQueryManager *qm = [FOQueryManager managerWithServer:OVERPASS_SERVER_DE queryLanguage:OVQueryLanguageQL delegate:nil];
         
         // Flyover will replace {{bbox}} with coordinates
-        [q queryString: @"[out:json]; (node ['shop'='bakery'] ({{bbox}})); out;" forBoundingBox:bbox success:^(NSArray *nodes, NSArray *ways, NSArray *relations) {
+        [qm performQuery: @"[out:json]; (node ['shop'='bakery'] ({{bbox}})); out;" forBoundingBox:bbox success:^(NSArray *nodes, NSArray *ways, NSArray *relations) {
             
             // nodes are duck-typed as MkAnnotations. Just throw them on a map.
             [mapView addAnnotations: nodes];

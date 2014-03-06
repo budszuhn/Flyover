@@ -26,7 +26,7 @@
 
 - (NSString *) description
 {
-    return [NSString stringWithFormat:@"id=%@, %d tags, %d nodes", _osmId, [_tags count], [_nodes count]];
+    return [NSString stringWithFormat:@"id=%@, %lu tags, %lu nodes", _osmId, (unsigned long)[_tags count], (unsigned long)[_nodes count]];
 }
 - (BOOL)isEqual:(id)other
 {

@@ -90,15 +90,15 @@ FOBoundingBoxMakeFromCoordinates(CLLocationCoordinate2D northWest, CLLocationCoo
 
 
 
-@interface FOQuery : NSObject
+@interface FOQueryManager : NSObject
 
 
-+ (FOQuery *) queryWithServer: (NSString *) serverUrl queryLanguage: (OVQueryLanguage) queryLanguage delegate: (id <FOQueryDelegate>) delegate;
++ (FOQueryManager *) managerWithServer: (NSString *) serverUrl queryLanguage: (OVQueryLanguage) queryLanguage delegate: (id <FOQueryDelegate>) delegate;
 
 // if you want the bounding box set to mapRect, insert {{bbox}} for bounding box, as used by http://overpass-turbo.eu
 // you *MUST* set json output in your query! Unfortunately XML is the default which will produce errors
 // in QL: [out:json] in XML: <osm-script output="json">
-- (void) queryString: (NSString *) queryString forBoundingBox: (FOBoundingBox) boundingBox
+- (void) performQuery: (NSString *) queryString forBoundingBox: (FOBoundingBox) boundingBox
        success:(void (^)(NSArray *nodes, NSArray *ways, NSArray *relations))success
        failure:(void (^)(NSError *error))failure;
 
