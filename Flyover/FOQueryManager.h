@@ -52,7 +52,7 @@ FOBoundingBoxMakeFromCoordinates(CLLocationCoordinate2D northWest, CLLocationCoo
 
 @protocol OSMNode <NSObject>
 
-@property (readonly) CLLocationCoordinate2D coordinate;
+@property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
 @property (nonatomic, readonly) NSNumber *osmId;
 @property (nonatomic, readonly) NSDictionary *tags;
 - (instancetype) initWithId: (NSNumber *) osmId coordinate: (CLLocationCoordinate2D) coordinate tags: (NSDictionary *) tags;
