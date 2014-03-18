@@ -23,12 +23,12 @@
 
 + (FOQueryManager *) managerWithServer: (NSString *) serverUrl queryLanguage: (OVQueryLanguage) queryLanguage delegate: (id <FOQueryDelegate>) delegate
 {
-    FOQueryManager *query = [[FOQueryManager alloc] init];
-    query.serverUrl = serverUrl;
-    query.queryLanguage = queryLanguage;
-    query.delegate = delegate;
+    FOQueryManager *queryManager = [[FOQueryManager alloc] init];
+    queryManager.serverUrl = serverUrl;
+    queryManager.queryLanguage = queryLanguage;
+    queryManager.delegate = delegate;
     
-    return query;
+    return queryManager;
 }
 
 
@@ -70,9 +70,9 @@
                success:(void (^)(NSArray *nodes, NSArray *ways, NSArray *relations))success
 {
     NSArray *elements = [responseObject valueForKey:@"elements"];
-    NSMutableArray *nodeArray = [NSMutableArray array];
-    NSMutableArray *wayArray = [NSMutableArray array];
+    NSMutableDictionary *nodeDictionary = [NSMutableDictionary dictionary];
     NSMutableArray *relationArray = [NSMutableArray array];
+    NSMutableArray *tempWayArray = [NSMutableArray array];
     
     for (NSDictionary *element in elements)
     {
@@ -80,11 +80,12 @@
         
         if ([type isEqualToString:@"node"])
         {
-            [nodeArray addObject: [self nodeForElement: element]];
+            id <OSMNode> node = [self nodeForElement: element];            
+            [nodeDictionary setObject:node forKey:[node.osmId stringValue]];
         }
         else if ([type isEqualToString:@"way"])
         {
-            [wayArray addObject: [self wayForElement: element]];
+            [tempWayArray addObject: [self wayForElement: element]];
         }
         else if ([type isEqualToString:@"relation"])
         {
@@ -96,7 +97,20 @@
         }
     }
     
-    success([nodeArray copy], [wayArray copy], [relationArray copy]);
+    // now resolve nodes inside ways
+    NSMutableArray *finalWayArray = [NSMutableArray arrayWithCapacity: [tempWayArray count]];
+    for (id <OSMWay> way in tempWayArray)
+    {
+        NSMutableArray *resolvedNodes = [NSMutableArray arrayWithCapacity: [way.nodes count]];
+        for (NSNumber *osmId in way.nodes)
+        {
+            [resolvedNodes addObject: [nodeDictionary valueForKey: [osmId stringValue]]];
+        }
+
+        [finalWayArray addObject: [self wayForWay: way andNodes: resolvedNodes]];
+    }
+    
+    success([nodeDictionary allValues], [finalWayArray copy], [relationArray copy]);
 }
 
 
@@ -132,7 +146,18 @@
     {
         return [[FOWay alloc] initWithId:osmId nodes:nodes tags:tags];
     }
+}
 
+- (id <OSMWay>) wayForWay: (id <OSMWay>) way andNodes: (NSArray *) nodes
+{
+    if ([_delegate respondsToSelector:@selector(wayWithOsmId:nodes:tags:)])
+    {
+        return [_delegate wayWithOsmId:way.osmId nodes:nodes tags:way.tags];
+    }
+    else
+    {
+        return [[FOWay alloc] initWithId:way.osmId nodes:nodes tags:way.tags];
+    }
 }
 
 - (id <OSMRelation>) relationForElement: (NSDictionary *) element
